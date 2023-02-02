@@ -8,13 +8,11 @@ from urllib.parse import urlparse
 
 # URLs of threat intel feeds to download
 urls = [
-    "https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.txt",
-    "https://urlhaus.abuse.ch/downloads/text_online/",
-    "https://rules.emergingthreats.net/blockrules/compromised-ips.txt",
-    "https://www.spamhaus.org/drop/drop.txt",
-    "http://reputation.alienvault.com/reputation.data",
-    "https://cinsscore.com/list/ci-badguys.txt",
-    "https://www.binarydefense.com/banlist.txt"
+    "URL1",
+    "URL2",
+    "URL3",
+    "URL4",
+    "URl5"
 ]
 
 #Set the output paths, use the full path
