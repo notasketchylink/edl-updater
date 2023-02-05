@@ -7,7 +7,7 @@ import datetime
 import zipfile
 
 # Set the output paths
-raw_path = '/scripts/python3/edl-updater/raw'
+sanitized_path = '/scripts/python3/edl-updater/sanitized'
 output_path = '/scripts/python3/edl-updater/output'
 logs_path = '/scripts/python3/edl-updater/logs'
 
@@ -22,16 +22,16 @@ ip_regex = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}(?:/\d{1,2})?\b')
 # Create a defaultdict to store the IP addresses and IP subnets
 ip_dict = defaultdict(list)
 
-# Create the "log", "raw", "raw_archived", and "output" directories if they don't exist
-os.makedirs(raw_path, exist_ok=True)
+# Create the "log", "sanitized", and "output" directories if they don't exist
+os.makedirs(sanitized_path, exist_ok=True)
 os.makedirs(output_path, exist_ok=True)
 os.makedirs(logs_path, exist_ok=True)
 
-# Iterate through the files in the raw folder
-for file_name in os.listdir(raw_path):
+# Iterate through the files in the sanitized folder
+for file_name in os.listdir(sanitized_path):
     try:
         # Open the file for reading
-        with open(os.path.join(raw_path, file_name), 'r') as file:
+        with open(os.path.join(sanitized_path, file_name), 'r') as file:
             # Iterate through the lines in the file
             for line in file:
                 # Ignore lines that start with '#' or whitespace

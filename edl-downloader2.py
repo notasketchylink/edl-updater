@@ -21,6 +21,7 @@ raw_archived_path = '/scripts/python3/edl-updater/raw_archived'
 output_path = '/scripts/python3/edl-updater/output'
 logs_path = '/scripts/python3/edl-updater/logs'
 logs_archived_path = '/scripts/python3/edl-updater/logs/archived'
+sanitized_path = '/scripts/python3/edl-updater/sanitzed'
 
 # Create the "raw", "raw_archived", and "output" directories if they don't exist
 os.makedirs(raw_path, exist_ok=True)
@@ -28,6 +29,7 @@ os.makedirs(raw_archived_path, exist_ok=True)
 os.makedirs(output_path, exist_ok=True)
 os.makedirs(logs_path, exist_ok=True)
 os.makedirs(logs_archived_path, exist_ok=True)
+os.makedirs(sanitized_path, exist_ok=True)
 
 # Configure logging
 logging.basicConfig(filename=f'{logs_path}/edl_updater.log', level=logging.INFO,
@@ -82,3 +84,19 @@ for file in os.listdir(logs_path):
                 logging.info(f"File {file} archived successfully.")
             except Exception as e:
                 logging.error(f"Error compressing and archiving file {file}: {e}")
+
+# Delete any file 59 minutes or older in the sanitized folder
+for file in os.listdir(sanitized_path):
+    filepath = os.path.join(sanitized_path, file)
+    if os.path.isfile(filepath):
+        current_time = time.time()
+        file_creation_time = os.path.getctime(filepath)
+        # calculate the difference between current time and file creation time
+        time_diff = current_time - file_creation_time
+        # check if the difference is greater than 59 minutes (in seconds)
+        if time_diff >= 59 * 60:
+            try:
+                os.remove(filepath)
+                logging.info(f"File {file} deleted successfully.")
+            except Exception as e:
+                logging.error(f"Error deleting file {file}: {e}")
