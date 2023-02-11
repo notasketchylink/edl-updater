@@ -14,6 +14,7 @@ Additional features include:
   * Rudimentary archiving of logs and raw threat feeds
   
 Tested against Python 3.6 and newer on RHEL 8, Ubuntu 22.04, and Windows 11.
+
 Known to not work properly on DietPi.
 
 ## Free threat intel sources
