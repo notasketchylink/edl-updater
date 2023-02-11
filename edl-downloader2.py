@@ -21,7 +21,7 @@ raw_archived_path = '/scripts/python3/edl-updater/raw_archived'
 output_path = '/scripts/python3/edl-updater/output'
 logs_path = '/scripts/python3/edl-updater/logs'
 logs_archived_path = '/scripts/python3/edl-updater/logs/archived'
-sanitized_path = '/scripts/python3/edl-updater/sanitzed'
+sanitized_path = '/scripts/python3/edl-updater/sanitized'
 
 # Create the "raw", "raw_archived", and "output" directories if they don't exist
 os.makedirs(raw_path, exist_ok=True)
