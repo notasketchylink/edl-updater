@@ -6,20 +6,7 @@ import zipfile
 import logging
 from urllib.parse import urlparse
 
-# URLs of threat intel feeds to download
-urls = [
-    "URL1",
-    "URL2",
-    "URL3",
-    "URL4",
-    "URl5"
-]
-
-#Set the output paths, use the full path
-raw_path = '/scripts/python3/edl-updater/raw'
-raw_archived_path = '/scripts/python3/edl-updater/raw_archived'
-logs_archived_path = '/scripts/python3/edl-updater/logs/archived'
-
+#Set the paths
 base_path = os.path.dirname(os.path.abspath(__file__))
 output_path = os.path.join(base_path, "output")
 logs_path = os.path.join(base_path, "logs")
@@ -27,6 +14,7 @@ sanitized_path = os.path.join(base_path, "sanitized")
 raw_path = os.path.join(base_path, "raw")
 raw_archived_path = os.path.join(base_path, "raw_archived")
 logs_archived_path = os.path.join(base_path, "logs_archived")
+threat_feeds_path = os.path.join(base_path, "threat_feeds.txt")
 
 # Create the "raw", "raw_archived", and "output" directories if they don't exist
 os.makedirs(raw_path, exist_ok=True)
@@ -35,6 +23,10 @@ os.makedirs(output_path, exist_ok=True)
 os.makedirs(logs_path, exist_ok=True)
 os.makedirs(logs_archived_path, exist_ok=True)
 os.makedirs(sanitized_path, exist_ok=True)
+
+# Read the URLs of threat intel feeds to download from a file
+with open(threat_feeds_path, 'r') as file:
+    urls = [line.strip() for line in file]
 
 # Configure logging
 logging.basicConfig(filename=f'{logs_path}/edl_updater.log', level=logging.INFO,
