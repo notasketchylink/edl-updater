@@ -7,9 +7,10 @@ import datetime
 import zipfile
 
 # Set the output paths
-sanitized_path = '/scripts/python3/edl-updater/sanitized'
-output_path = '/scripts/python3/edl-updater/output'
-logs_path = '/scripts/python3/edl-updater/logs'
+base_path = os.path.dirname(os.path.abspath(__file__))
+output_path = os.path.join(base_path, "output")
+logs_path = os.path.join(base_path, "logs")
+sanitized_path = os.path.join(base_path, "sanitized")
 
 # Configure logging
 logging.basicConfig(filename=f'{logs_path}/ip_handler.log', level=logging.INFO,

@@ -18,10 +18,15 @@ urls = [
 #Set the output paths, use the full path
 raw_path = '/scripts/python3/edl-updater/raw'
 raw_archived_path = '/scripts/python3/edl-updater/raw_archived'
-output_path = '/scripts/python3/edl-updater/output'
-logs_path = '/scripts/python3/edl-updater/logs'
 logs_archived_path = '/scripts/python3/edl-updater/logs/archived'
-sanitized_path = '/scripts/python3/edl-updater/sanitized'
+
+base_path = os.path.dirname(os.path.abspath(__file__))
+output_path = os.path.join(base_path, "output")
+logs_path = os.path.join(base_path, "logs")
+sanitized_path = os.path.join(base_path, "sanitized")
+raw_path = os.path.join(base_path, "raw")
+raw_archived_path = os.path.join(base_path, "raw_archived")
+logs_archived_path = os.path.join(base_path, "logs_archived")
 
 # Create the "raw", "raw_archived", and "output" directories if they don't exist
 os.makedirs(raw_path, exist_ok=True)
