@@ -9,30 +9,25 @@ import ipaddress
 # Compile the regular expression pattern to match non-ASCII characters
 non_ascii_pattern = re.compile(r"[^\x00-\x7F]+")
 
-def sanitize_line(line):
+# Compile a regular expression pattern to match HTML tags
+html_tag_pattern = re.compile(r"<[^<]+?>")
+
+# Compile a regular expression pattern to match comment symbols
+comment_pattern = re.compile(r"[#;]")
+
+def sanitize_line(line, non_ascii_pattern, html_tag_pattern):
     """
     This function cleans a single line from the input file.
     It removes leading and trailing whitespaces, unescapes any HTML entities, removes any HTML tags, removes any non-ASCII characters and converts the line to lowercase.
     If the line contains a comment symbol "#" or ";", everything after it is removed.
     """
     line = line.strip()
-    comment_index = line.find("#")
-    semicolon_index = line.find(";")
-    if comment_index == -1 and semicolon_index == -1:
-        line = html.unescape(line)
-        line = re.sub(r"<[^<]+?>", "", line)
-        line = re.sub(non_ascii_pattern, "", line)
-        return line.lower()
-    else:
-        comment_index = min(filter(lambda x: x != -1, [comment_index, semicolon_index]))
-        line = line[:comment_index].strip()
-        if line:
-            line = html.unescape(line)
-            line = re.sub(r"<[^<]+?>", "", line)
-            line = re.sub(non_ascii_pattern, "", line)
-            return line.lower()
-        else:
-            return ""
+    line = html.unescape(line)
+    line = re.sub(html_tag_pattern, "", line)
+    line = re.sub(non_ascii_pattern, "", line)
+    line = line.lower()
+    line = re.sub(comment_pattern, "", line)
+    return line.strip()
 
 def sanitize_file(file_path, output_file, whitelist_domains, whitelist_networks):
     """
@@ -42,34 +37,18 @@ def sanitize_file(file_path, output_file, whitelist_domains, whitelist_networks)
     try:
         with open(file_path, "r") as input_file, open(output_file, "w") as output:
             for line in input_file:
-                line = sanitize_line(line)
-                if line:
-                    skip = False
-                    for domain in whitelist_domains:
-                        if domain in line:
-                            skip = True
-                            break
-                    if skip:
+                line = sanitize_line(line, non_ascii_pattern, html_tag_pattern)
+                if not line:
+                    continue
+                if any(domain in line for domain in whitelist_domains):
+                    continue
+                try:
+                    ip = ipaddress.ip_interface(line.strip())
+                    if any(ip in network for network in whitelist_networks if ip.version == network.version):
                         continue
-                    try:
-                        ip = ipaddress.ip_address(line)
-                        for network in whitelist_networks:
-                            """
-                            Is the IP within a subnet listed in the whitelist, if so the line is skipped
-                            """
-                            if ip in network or ipaddress.ip_network(line).subnet_of(network):
-                                skip = True
-                                break
-                            """
-                            Does the line match a subnet specified in the whitelist, if so the line is skipped
-                            """
-                            if ip in line:
-                                skip = True
-                                break
-                        if not skip:
-                            output.write(line + "\n")
-                    except ValueError:
-                        output.write(line + "\n")
+                except ValueError:
+                    pass
+                output.write(line + "\n")
     except Exception as e:
         logging.error("Error processing file {}: {}".format(file_path, e))
 
@@ -103,11 +82,14 @@ def main():
     Verify paths exist
     Call N-1 workers to process through the files
     """
-    raw_path = "/scripts/edl-updater/raw"
-    sanitized_path = "/scripts/edl-updater/sanitized"
-    logs_path = "/scripts/edl-updater/logs"
-    whitelist_domains_file = "/scripts/edl-updater/whitelist_domains.txt"
-    whitelist_networks_file = "/scripts/edl-updater/whitelist_networks.txt"
+
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    raw_path = os.path.join(base_path, "raw")
+    sanitized_path = os.path.join(base_path, "sanitized")
+    logs_path = os.path.join(base_path, "logs")
+    whitelist_domains_file = os.path.join(base_path, "whitelist_domains.txt")
+    whitelist_networks_file = os.path.join(base_path, "whitelist_networks.txt")
+
 
     os.makedirs(sanitized_path, exist_ok=True)
     os.makedirs(logs_path, exist_ok=True)
@@ -123,7 +105,7 @@ def main():
     num_cpus = os.cpu_count()
     max_threads = num_cpus - 1
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_threads) as executor:
         for filename in os.listdir(raw_path):
             file_path = os.path.join(raw_path, filename)
             output_file = os.path.join(sanitized_path, filename)
