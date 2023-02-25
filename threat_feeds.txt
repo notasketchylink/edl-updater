@@ -19,3 +19,16 @@ https://www.dshield.org/block.txt
 https://www.spamhaus.org/drop/drop.txt
 https://www.spamhaus.org/drop/edrop.txt
 https://www.talosintelligence.com/documents/ip-blacklist
+https://blocklistproject.github.io/Lists/alt-version/abuse-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/fraud-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/malware-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/phishing-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/ransomware-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/scam-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/tiktok-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/tracking-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/crypto-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/porn-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/smart-tv-nl.txt
+https://blocklistproject.github.io/Lists/alt-version/basic-nl.txt
+https://threatfox.abuse.ch/export/csv/recent/
